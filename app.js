@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const projectRouter = require('./routes/project-routes');
+const taskRouter = require('./routes/task-routes')
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTES MIDDLEWARE:
 app.use('/api', projectRouter);
+app.use('/api', taskRouter)
 
 
 module.exports = app;
