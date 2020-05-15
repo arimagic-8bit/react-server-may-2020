@@ -13,7 +13,7 @@ taskRouter.get("/tasks/:taskId", (req, res, next) => {
   const { taskId } = req.params;
 
   Task.findById(taskId)
-    .populate('project')
+    .populate("project")
     .then((task) => {
       res.status(200).json(task);
     })
@@ -25,18 +25,22 @@ taskRouter.get("/tasks/:taskId", (req, res, next) => {
 // POST '/api/tasks'      => to create a new task
 
 taskRouter.post("/tasks", (req, res, next) => {
-
-    // This is the data that that the server receives from FORMS AXIOS FETCH
+  // This is the data that that the server receives from FORMS AXIOS FETCH
   const { title, description, projectId } = req.body;
 
-    // THIS IS WHAT THE SERVER GIVES US
-  Task.create({ title, description, project: projectId })
-    .then((newTask) => {
-      res.status(201).json(newTask);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
+  // THIS IS WHAT THE SERVER GIVES US
+
+  Task.create({ title, description, project: projectId }).then((newTask) => {
+    // we put the new task inside the tasks array of the project
+
+    Project.findByIdAndUpdate(project, { $push: { tasks: newTask._id } })
+      .then(() => {
+        res.status(201).json(newTask);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  });
 });
 
 // PUT '/api/tasks/:id'    => to update a specific task
